@@ -48,21 +48,25 @@ int isLetter(char c)
 	return ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) ? 1 : 0;
 }
 
-void add_symbol(Object *a, Object *b)
-{
-	symbol_list[count++] = new_Object(SYMBOL, a, b);
-}
-
 Object *find_symbol(Object *a)
 {
 	int i;
 	for (i = 0; i < count; i++) {
-		if (strcmp((char *) symbol_list[i]->car, (char *) a->car) == 0) {
-			return symbol_list[i]->cdr;
+		if (strcmp((char *) symbol_list[i]->car, (char *) a) == 0) {
+			return symbol_list[i];
 		}
 	}
-	return NULL;
+	symbol_list[count++] = new_Object(SYMBOL, a, NULL);
+	return symbol_list[count - 1];
 }
+
+Object *add_symbol(Object *a, Object *b)
+{
+	Object *c = find_symbol(a);
+	c->cdr = b;
+	return c;
+}
+
 
 char *left;
 char buf[MAX_LEN];
@@ -132,7 +136,7 @@ Object *Evaluate(Object *a);
 
 Object *apply(Object *a, Object *b)
 {
-	return (*(fptr)a)(b);
+	return (*(fptr)(a->cdr))(b);
 }
 
 Object *list(Object *a)
@@ -155,7 +159,7 @@ Object *Evaluate(Object *a)
 		case CONS:
 			return apply(Evaluate(a->car), list(a->cdr));
 		case SYMBOL:
-			return find_symbol(a);
+			return find_symbol(a->car);
 	}
 	
 	return a;
@@ -165,7 +169,8 @@ Object *op_add(Object *a)
 {
 	int ans = 0;
 	while (a != NULL) {
-		ans += (int) a->car->car;
+		int n = a->car->type == INT ? (int) a->car->car : (int) a->car->cdr;
+		ans += n;
 		a = a->cdr;
 	}
 	return new_Object(INT, (Object *) ans, NULL);
@@ -215,6 +220,11 @@ void quit()
 	stop = 1;
 }
 
+Object *setq(Object *a)
+{
+	return add_symbol(a->car->car, a->cdr->car->car);
+}
+
 void Print(Object *a) {
 	if (a == NULL) {
 		printf("NIL");
@@ -233,7 +243,7 @@ void Print(Object *a) {
 		return;
 	}
 	if (a->type == SYMBOL) {
-		printf("%s", (char *) a->car);
+		printf("%d", (int) a->cdr);
 		return;
 	}
 }
@@ -247,6 +257,7 @@ int main()
 	add_symbol((Object *) "*", (Object *) op_mul);
 	add_symbol((Object *) "/", (Object *) op_div);
 	add_symbol((Object *) "quit", (Object *) quit);
+	add_symbol((Object *) "setq", (Object *) setq);
 	while (!stop) {
 		printf("\n>");
 		char buffer[INPUT_LEN] = {0};

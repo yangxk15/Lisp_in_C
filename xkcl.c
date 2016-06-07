@@ -1,3 +1,5 @@
+/* Author: Xiankai Yang */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

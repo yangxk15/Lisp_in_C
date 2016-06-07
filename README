@@ -1,0 +1,44 @@
+# Lisp_in_C
+
+Program decription:
+
+This is a simple lisp interpreter implemented in C.
+Support basic variable display like NIL;
+Support fundamental steps as read, eval, print, etc.
+Support primal operations like '+' '-' '*' '/';
+Support recursively function call using stack;
+Support variable definition like "setq";
+Support using variables in the basic function;
+
+Due to the limited time, the following features are still in progress:
+Function customized define like "defun".
+Input check and syntax check.
+More built-in functions initialization.
+
+Program snapshot:
+
+yangxk15s-MacBook-Pro:project yangxk15$ ./xkcl 
+XKCL (Xiankai Common Lisp) Version 1.0 Tue Jun  7 02:19:11 2016
+
+>()
+NIL
+>(+ 3 5)
+8
+>(- 3 4)
+-1
+>(* 2 3)
+6
+>(/ 8 4)
+2
+>(+ (- 5 2) (* 3 (/ 10 2)))
+18
+>(setq a 5)
+5
+>(+ a 5)
+10
+>(setq a 7)
+7
+>(+ a 5)
+12
+>(quit)
+yangxk15s-MacBook-Pro:project yangxk15$ 

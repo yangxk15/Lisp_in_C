@@ -6,7 +6,7 @@
 #include <time.h>
 
 #define INPUT_LEN	256
-#define MAX_LEN	64
+#define MAX_LEN		64
 
 char *p;
 int invalid;
